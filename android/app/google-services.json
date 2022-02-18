@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "268516138190",
+    "project_id": "fanpage-app-28024",
+    "storage_bucket": "fanpage-app-28024.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:268516138190:android:69563440f579dfcacdc49f",
+        "android_client_info": {
+          "package_name": "com.naimam.fanpage_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "268516138190-6v6e19qdl4dbldjjt6i7h9tha2uvku6c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuZHVXpZXqQitT0QoT7fqiNBI4pEt8MvY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "268516138190-6v6e19qdl4dbldjjt6i7h9tha2uvku6c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
