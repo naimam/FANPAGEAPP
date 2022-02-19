@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fanpage_app/widgets/FormText.dart';
 
 // create sign up page with firebase auth and firestore database
 class SignUp extends StatefulWidget {
