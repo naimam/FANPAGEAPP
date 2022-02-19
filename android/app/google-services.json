@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "268516138190-f5tonp963ulmjgq7uclpcqs8puaqj183.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.naimam.fanpage_app",
+            "certificate_hash": "1265eff9e1d43301cdcdd7dee3a93e0a46325321"
+          }
+        },
+        {
           "client_id": "268516138190-6v6e19qdl4dbldjjt6i7h9tha2uvku6c.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "268516138190-6v6e19qdl4dbldjjt6i7h9tha2uvku6c.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "268516138190-qf1iv97di690kg7rbd5sal4b9i6gt5qu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.naimam.fanpageapp"
+              }
             }
           ]
         }
