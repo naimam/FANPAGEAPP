@@ -20,6 +20,9 @@ class _SignInState extends State<SignIn> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  // firebase auth
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     // email field
@@ -27,7 +30,16 @@ class _SignInState extends State<SignIn> {
       controller: emailController,
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
-      // validator: () {},
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter an email';
+        }
+        if (!value.contains('@')) {
+          return 'Please enter a valid email';
+        }
+
+        return null;
+      },
       onSaved: (value) {
         emailController.text = value!;
       },
@@ -47,7 +59,15 @@ class _SignInState extends State<SignIn> {
       controller: passwordController,
       autofocus: false,
       obscureText: true,
-      // validator: () {},
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter a password';
+        }
+        if (value.length < 6) {
+          return 'Password must be at least 6 characters';
+        }
+        return null;
+      },
       onSaved: (value) {
         passwordController.text = value!;
       },
@@ -69,8 +89,7 @@ class _SignInState extends State<SignIn> {
       color: Colors.blue,
       child: MaterialButton(
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => const Home()));
+          logIn(emailController.text, passwordController.text);
         },
         child: const Text("Sign In",
             style: TextStyle(
@@ -143,5 +162,25 @@ class _SignInState extends State<SignIn> {
         ),
       ),
     );
+  }
+
+// login function
+  void logIn(String email, String password) async {
+    if (_formKey.currentState!.validate()) {
+      await _auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((uid) => {
+                // Fluttertoast.showToast(
+                //   msg: "Logged in successfully",
+                // ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Home()),
+                )
+              })
+          .catchError((e) {
+        // Fluttertoast.showToast(msg: e!.message);
+      });
+    }
   }
 }
