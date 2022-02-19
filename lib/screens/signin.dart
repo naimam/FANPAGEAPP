@@ -93,7 +93,7 @@ class _SignInState extends State<SignIn> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       const SizedBox(
-                        child: Text("FANPAGE APP",
+                        child: Text("LOG IN",
                             style: TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,

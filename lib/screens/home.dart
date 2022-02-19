@@ -19,7 +19,7 @@ class _HomeState extends State<Home> {
         actions: <Widget>[
           IconButton(
               icon: const Icon(Icons.logout),
-              tooltip: 'Show Snackbar',
+              tooltip: 'Logout',
               onPressed: () {
                 FirebaseAuth.instance.signOut().then((value) {
                   Navigator.push(
