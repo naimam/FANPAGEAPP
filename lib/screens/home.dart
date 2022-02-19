@@ -21,12 +21,12 @@ class _HomeState extends State<Home> {
               icon: const Icon(Icons.logout),
               tooltip: 'Logout',
               onPressed: () {
-                FirebaseAuth.instance.signOut().then((value) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignIn()),
-                  );
-                });
+                //  FirebaseAuth.instance.signOut().then((value) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignIn()),
+                );
+                // });
               }),
         ],
       ),

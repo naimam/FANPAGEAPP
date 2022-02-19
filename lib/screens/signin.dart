@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fanpage_app/screens/signup.dart';
+import 'package:fanpage_app/screens/home.dart';
 
 // create STATEFUL WIDGET signin
 class SignIn extends StatefulWidget {
@@ -67,7 +68,10 @@ class _SignInState extends State<SignIn> {
       borderRadius: BorderRadius.circular(10.0),
       color: Colors.blue,
       child: MaterialButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => const Home()));
+        },
         child: const Text("Sign In",
             style: TextStyle(
                 color: Colors.white,
