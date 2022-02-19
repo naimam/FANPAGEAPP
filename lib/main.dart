@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
     if (user == null) {
       return MaterialApp(
         routes: routes,
-        initialRoute: '/home',
+        initialRoute: '/signup',
       );
     } else {
       return MaterialApp(
