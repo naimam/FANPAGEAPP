@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fanpage_app/model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fanpage_app/main.dart';
@@ -14,7 +13,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   User? user = FirebaseAuth.instance.currentUser;
-  UserModel loggedInUser = UserModel();
 
   @override
   void initState() {
@@ -24,7 +22,6 @@ class _HomeState extends State<Home> {
         .doc(user?.uid)
         .get()
         .then((value) {
-      this.loggedInUser = UserModel.fromMap(value.data());
       setState(() {});
     });
   }

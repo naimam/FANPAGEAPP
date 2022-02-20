@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fanpage_app/model/user_model.dart';
 import 'package:fanpage_app/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -167,7 +166,9 @@ class _SignUpState extends State<SignUp> {
       color: Colors.blue,
       child: MaterialButton(
         onPressed: () {
-          Register(emailController.text, passwordController.text);
+          setState(() {
+            register();
+          });
         },
         child: const Text("Sign Up",
             style: TextStyle(
@@ -232,42 +233,35 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  void Register(String email, String password) async {
-    if (_formKey.currentState!.validate()) {
-      await _auth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) => {postDetailsToFirestore()})
-          .catchError((e) {
-        //Fluttertoast.showToast(msg: e!.message);
-      });
+  Future<void> register() async {
+    try {
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+              email: emailController.text, password: passwordController.text);
+      // setState(() {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      CollectionReference users = firestore.collection('users');
+      users
+          .doc(userCredential.user!.uid)
+          .set({
+            "first_name": fNameController.text,
+            "last_name": lNameController.text,
+            "email": emailController.text,
+            "role": "customer",
+            "register_date": DateTime.now()
+          })
+          // ;
+          .then((value) => null)
+          .onError((error, stackTrace) => null);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Home()));
+      // });
+
+    } on FirebaseAuthException catch (e) {
+    } catch (e) {
+      print(e);
     }
-  }
 
-  void postDetailsToFirestore() async {
-    // calling firestore
-    //callign usermodel
-    //sending values
-
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    User? user = _auth.currentUser;
-    UserModel userModel = UserModel();
-
-    userModel.firstName = fNameController.text;
-    userModel.lastName = lNameController.text;
-    userModel.email = user!.email;
-    userModel.uid = user.uid;
-    userModel.role = "customer";
-    userModel.registerDate = DateTime.now() as String?;
-
-    CollectionReference users = firestore.collection('users');
-    users.doc(user.uid).set(
-          userModel.toMap(),
-        );
-    // Fluttertoast.showToast(msg: "User Registered");
-
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const Home()),
-        (route) => false);
+    setState(() {});
   }
 }
