@@ -14,6 +14,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   User? user = FirebaseAuth.instance.currentUser;
+
   TextEditingController textFieldController = TextEditingController();
   bool admin = false;
   String userFName = " ";
@@ -28,6 +29,10 @@ class _HomeState extends State<Home> {
         userRole = document['role'];
         admin = (userRole == 'admin');
         userFName = document['first_name'];
+        if (userFName == " ") {
+          userFName = user!.displayName.toString();
+        }
+
         userLName = document['last_name'];
       }
       setState(() {});
@@ -45,7 +50,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Hello, ' + userFName + "! "),
+        title: const Text("Home"),
         actions: <Widget>[
           IconButton(
               icon: const Icon(Icons.logout),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fanpage_app/screens/signup.dart';
 import 'package:fanpage_app/screens/home.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 // create STATEFUL WIDGET signin
@@ -109,7 +110,9 @@ class _SignInState extends State<SignIn> {
       borderRadius: BorderRadius.circular(10.0),
       color: Colors.black,
       child: MaterialButton(
-        onPressed: () {},
+        onPressed: () {
+          googleLogin(context);
+        },
         child: const Text("Sign In With Google",
             style: TextStyle(
                 color: Colors.white,
@@ -200,22 +203,38 @@ class _SignInState extends State<SignIn> {
     }
   }
 
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+// sign in w google
 
-  Future<String?> signInwithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleSignInAccount =
-          await _googleSignIn.signIn();
+  Future<void> googleLogin(BuildContext context) async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final GoogleSignInAccount? googleSignInAccount =
+        await googleSignIn.signIn();
+    if (googleSignInAccount != null) {
       final GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount!.authentication;
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.idToken,
-      );
-      await _auth.signInWithCredential(credential);
-    } on FirebaseAuthException catch (e) {
-      print(e.message);
-      throw e;
+          await googleSignInAccount.authentication;
+      final AuthCredential authCredential = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken);
+
+      UserCredential result = await _auth.signInWithCredential(authCredential);
+      User? user = result.user;
+
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      CollectionReference users = firestore.collection('users');
+      users
+          .doc(user!.uid)
+          .set({
+            "first_name": user.displayName,
+            "last_name": user.displayName,
+            "email": user.email,
+            "role": "customer",
+            "register_date": DateTime.now()
+          })
+          // ;
+          .then((value) => null)
+          .onError((error, stackTrace) => null);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const Home()));
     }
   }
 }
