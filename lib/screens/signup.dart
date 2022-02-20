@@ -234,33 +234,24 @@ class _SignUpState extends State<SignUp> {
   }
 
   Future<void> register() async {
-    try {
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-              email: emailController.text, password: passwordController.text);
-      // setState(() {
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-      CollectionReference users = firestore.collection('users');
-      users
-          .doc(userCredential.user!.uid)
-          .set({
-            "first_name": fNameController.text,
-            "last_name": lNameController.text,
-            "email": emailController.text,
-            "role": "customer",
-            "register_date": DateTime.now()
-          })
-          // ;
-          .then((value) => null)
-          .onError((error, stackTrace) => null);
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Home()));
-      // });
-
-    } on FirebaseAuthException catch (e) {
-    } catch (e) {
-      print(e);
-    }
+    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: emailController.text, password: passwordController.text);
+    // setState(() {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference users = firestore.collection('users');
+    users
+        .doc(userCredential.user!.uid)
+        .set({
+          "first_name": fNameController.text,
+          "last_name": lNameController.text,
+          "email": emailController.text,
+          "role": "customer",
+          "register_date": DateTime.now()
+        })
+        .then((value) => null)
+        .onError((error, stackTrace) => null);
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => const Home()));
 
     setState(() {});
   }

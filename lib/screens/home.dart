@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fanpage_app/screens/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fanpage_app/main.dart';
 import 'package:fanpage_app/screens/signin.dart';
 
 class Home extends StatefulWidget {
