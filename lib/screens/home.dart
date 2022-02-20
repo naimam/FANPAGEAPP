@@ -16,13 +16,19 @@ class _HomeState extends State<Home> {
   User? user = FirebaseAuth.instance.currentUser;
   TextEditingController textFieldController = TextEditingController();
   bool admin = false;
+  String userFName = " ";
+  String userLName = " ";
+  String userRole = " ";
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   CollectionReference posts = FirebaseFirestore.instance.collection('posts');
 
   Future<void> ifUserAdmin() async {
     await users.doc(user?.uid).get().then((DocumentSnapshot document) {
       if (document.exists) {
-        admin = (document['role'] == 'admin');
+        userRole = document['role'];
+        admin = (userRole == 'admin');
+        userFName = document['first_name'];
+        userLName = document['last_name'];
       }
       setState(() {});
     });
@@ -38,7 +44,8 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        automaticallyImplyLeading: false,
+        title: Text('Hello, ' + userFName + "! "),
         actions: <Widget>[
           IconButton(
               icon: const Icon(Icons.logout),
@@ -59,12 +66,18 @@ class _HomeState extends State<Home> {
 
           return ListView(
             children: snapshot.data!.docs.map((document) {
-              return Container(
-                padding: const EdgeInsets.all(10),
-                height: 60,
-                child: Center(
-                  child: Text(document['message']),
-                ),
+              return Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: Row(children: <Widget>[
+                      Flexible(
+                          child: Text(
+                              document['message'] + "\n" + "Posted by Naima M.",
+                              style: const TextStyle(fontSize: 20))),
+                    ]),
+                  ),
+                ],
               );
             }).toList(),
           );
@@ -101,7 +114,7 @@ class _HomeState extends State<Home> {
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut();
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => const SignUp()));
+                      MaterialPageRoute(builder: (context) => const SignIn()));
                 },
                 child: const Text("Yes."),
               ),
