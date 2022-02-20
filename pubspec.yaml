@@ -36,6 +36,7 @@ dependencies:
   firebase_auth: ^3.3.7
   cloud_firestore: ^3.1.8
   google_sign_in: ^5.2.3
+  flutter_native_splash: ^2.0.4
 
 dev_dependencies:
   flutter_test:
@@ -52,6 +53,9 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
+flutter_native_splash:
+  color: "#B4CAD7"
+  image: assets/images/splash_img.png
 flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
