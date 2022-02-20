@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fanpage_app/screens/signup.dart';
 import 'package:fanpage_app/screens/home.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 // create STATEFUL WIDGET signin
 class SignIn extends StatefulWidget {
@@ -101,6 +102,24 @@ class _SignInState extends State<SignIn> {
       ),
     );
 
+    // sign in with google button
+
+    final signInWithGoogleButton = Material(
+      elevation: 5,
+      borderRadius: BorderRadius.circular(10.0),
+      color: Colors.black,
+      child: MaterialButton(
+        onPressed: () {},
+        child: const Text("Sign In With Google",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold)),
+        padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+        minWidth: MediaQuery.of(context).size.width,
+      ),
+    );
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -133,6 +152,8 @@ class _SignInState extends State<SignIn> {
                       const SizedBox(height: 10),
                       signInButton,
                       const SizedBox(height: 10),
+                      signInWithGoogleButton,
+                      const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -154,7 +175,7 @@ class _SignInState extends State<SignIn> {
                             ),
                           )
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -170,17 +191,31 @@ class _SignInState extends State<SignIn> {
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
           .then((uid) => {
-                // Fluttertoast.showToast(
-                //   msg: "Logged in successfully",
-                // ),
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const Home()),
                 )
               })
-          .catchError((e) {
-        // Fluttertoast.showToast(msg: e!.message);
-      });
+          .catchError((e) {});
+    }
+  }
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  Future<String?> signInwithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleSignInAccount =
+          await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount!.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+      await _auth.signInWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      print(e.message);
+      throw e;
     }
   }
 }
