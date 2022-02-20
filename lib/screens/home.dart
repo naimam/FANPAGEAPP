@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fanpage_app/model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fanpage_app/main.dart';
@@ -11,6 +13,22 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel loggedInUser = UserModel();
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(user?.uid)
+        .get()
+        .then((value) {
+      this.loggedInUser = UserModel.fromMap(value.data());
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,12 +39,12 @@ class _HomeState extends State<Home> {
               icon: const Icon(Icons.logout),
               tooltip: 'Logout',
               onPressed: () {
-                //  FirebaseAuth.instance.signOut().then((value) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignIn()),
-                );
-                // });
+                FirebaseAuth.instance.signOut().then((value) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignIn()),
+                  );
+                });
               }),
         ],
       ),

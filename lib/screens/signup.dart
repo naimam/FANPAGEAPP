@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fanpage_app/model/user_model.dart';
+import 'package:fanpage_app/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fanpage_app/screens/signin.dart';
@@ -12,6 +14,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>(); //form key
 
   // text field controllers
@@ -27,7 +30,13 @@ class _SignUpState extends State<SignUp> {
     final firstNameField = TextFormField(
       controller: fNameController,
       autofocus: false,
-      // validator: () {},
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter your first name';
+        }
+
+        return null;
+      },
       onSaved: (value) {
         fNameController.text = value!;
       },
@@ -46,7 +55,13 @@ class _SignUpState extends State<SignUp> {
     final lastNameField = TextFormField(
       controller: lNameController,
       autofocus: false,
-      // validator: () {},
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter your last name';
+        }
+
+        return null;
+      },
       onSaved: (value) {
         lNameController.text = value!;
       },
@@ -66,7 +81,16 @@ class _SignUpState extends State<SignUp> {
       controller: emailController,
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
-      // validator: () {},
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter an email';
+        }
+        if (!value.contains('@')) {
+          return 'Please enter a valid email';
+        }
+
+        return null;
+      },
       onSaved: (value) {
         emailController.text = value!;
       },
@@ -86,7 +110,15 @@ class _SignUpState extends State<SignUp> {
       controller: passwordController,
       autofocus: false,
       obscureText: true,
-      // validator: () {},
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter a password';
+        }
+        if (value.length < 6) {
+          return 'Password must be at least 6 characters';
+        }
+        return null;
+      },
       onSaved: (value) {
         passwordController.text = value!;
       },
@@ -105,7 +137,15 @@ class _SignUpState extends State<SignUp> {
       controller: confirmPasswordController,
       autofocus: false,
       obscureText: true,
-      // validator: () {},
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please confirm your password';
+        }
+        if (value != passwordController.text) {
+          return 'Passwords do not match';
+        }
+        return null;
+      },
       onSaved: (value) {
         confirmPasswordController.text = value!;
       },
@@ -126,7 +166,9 @@ class _SignUpState extends State<SignUp> {
       borderRadius: BorderRadius.circular(10.0),
       color: Colors.blue,
       child: MaterialButton(
-        onPressed: () {},
+        onPressed: () {
+          Register(emailController.text, passwordController.text);
+        },
         child: const Text("Sign Up",
             style: TextStyle(
                 color: Colors.white,
@@ -188,5 +230,44 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
+  }
+
+  void Register(String email, String password) async {
+    if (_formKey.currentState!.validate()) {
+      await _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) => {postDetailsToFirestore()})
+          .catchError((e) {
+        //Fluttertoast.showToast(msg: e!.message);
+      });
+    }
+  }
+
+  void postDetailsToFirestore() async {
+    // calling firestore
+    //callign usermodel
+    //sending values
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    User? user = _auth.currentUser;
+    UserModel userModel = UserModel();
+
+    userModel.firstName = fNameController.text;
+    userModel.lastName = lNameController.text;
+    userModel.email = user!.email;
+    userModel.uid = user.uid;
+    userModel.role = "customer";
+    userModel.registerDate = DateTime.now() as String?;
+
+    CollectionReference users = firestore.collection('users');
+    users.doc(user.uid).set(
+          userModel.toMap(),
+        );
+    // Fluttertoast.showToast(msg: "User Registered");
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const Home()),
+        (route) => false);
   }
 }
