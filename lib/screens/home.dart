@@ -91,9 +91,10 @@ class _HomeState extends State<Home> {
               onPressed: () async {
                 final postMessage = await openDialog();
                 if (postMessage != null && postMessage.isNotEmpty) {
+                  final register_date = DateTime.now().toString();
                   posts.doc().set({
                     'message': postMessage,
-                    "register_date": DateTime.now(),
+                    "register_date": register_date,
                   });
                 }
               },
