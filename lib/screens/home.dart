@@ -15,17 +15,23 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   User? user = FirebaseAuth.instance.currentUser;
   TextEditingController textFieldController = TextEditingController();
+  bool admin = false;
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  CollectionReference posts = FirebaseFirestore.instance.collection('posts');
+
+  Future<void> ifUserAdmin() async {
+    await users.doc(user?.uid).get().then((DocumentSnapshot document) {
+      if (document.exists) {
+        admin = (document['role'] == 'admin');
+      }
+      setState(() {});
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(user?.uid)
-        .get()
-        .then((value) {
-      setState(() {});
-    });
+    ifUserAdmin();
   }
 
   @override
@@ -43,11 +49,11 @@ class _HomeState extends State<Home> {
         ],
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+        stream: posts.snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
+            return const Center(
+              child: Text("No posts yet"),
             );
           }
 
@@ -64,23 +70,16 @@ class _HomeState extends State<Home> {
           );
         },
       ),
-      // TODO: change to if user role = ADMIN,
-      floatingActionButton: user != null
+      floatingActionButton: admin == true
           ? FloatingActionButton(
               onPressed: () async {
-                // addmind add post;
-
                 final postMessage = await openDialog();
-                print(postMessage);
                 if (postMessage != null && postMessage.isNotEmpty) {
-                  FirebaseFirestore firestore = FirebaseFirestore.instance;
-                  CollectionReference posts = firestore.collection('posts');
                   posts.doc().set({
                     'message': postMessage,
                     "register_date": DateTime.now(),
                   });
                 }
-                print(user);
               },
               tooltip: 'Add post',
               backgroundColor: Colors.blue,
