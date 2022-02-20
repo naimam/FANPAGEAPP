@@ -48,7 +48,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text("Home"),
+        title: Text("Welcome, " + userRole + " " + userFName),
         actions: <Widget>[
           IconButton(
               icon: const Icon(Icons.logout),
@@ -76,7 +76,7 @@ class _HomeState extends State<Home> {
                     child: Row(children: <Widget>[
                       Flexible(
                           child: Text(
-                              document['message'] + "\n" + "Posted by Naima M.",
+                              document['message'] + "\n" + "Posted by ADMIN.",
                               style: const TextStyle(fontSize: 20))),
                     ]),
                   ),
